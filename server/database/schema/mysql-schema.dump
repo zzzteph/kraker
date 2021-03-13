@@ -1,0 +1,423 @@
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+DROP TABLE IF EXISTS `agent_info`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `agent_info` (
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `agent_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `key` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `value` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`agent_id`,`key`),
+  CONSTRAINT `agent_info_agent_id_foreign` FOREIGN KEY (`agent_id`) REFERENCES `agents` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `agent_inventory`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `agent_inventory` (
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `agent_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `inventory_id` bigint(20) unsigned NOT NULL,
+  PRIMARY KEY (`agent_id`,`inventory_id`),
+  KEY `agent_inventory_inventory_id_foreign` (`inventory_id`),
+  CONSTRAINT `agent_inventory_agent_id_foreign` FOREIGN KEY (`agent_id`) REFERENCES `agents` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `agent_inventory_inventory_id_foreign` FOREIGN KEY (`inventory_id`) REFERENCES `inventory` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `agent_logs`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `agent_logs` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `agent_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `info` varchar(1000) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `agent_logs_agent_id_foreign` (`agent_id`),
+  CONSTRAINT `agent_logs_agent_id_foreign` FOREIGN KEY (`agent_id`) REFERENCES `agents` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `agent_stats`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `agent_stats` (
+  `agent_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `hashtype_id` int(11) NOT NULL,
+  `speed` bigint(20) unsigned NOT NULL DEFAULT 0,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`agent_id`,`hashtype_id`),
+  KEY `agent_stats_hashtype_id_foreign` (`hashtype_id`),
+  CONSTRAINT `agent_stats_agent_id_foreign` FOREIGN KEY (`agent_id`) REFERENCES `agents` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `agent_stats_hashtype_id_foreign` FOREIGN KEY (`hashtype_id`) REFERENCES `hashtypes` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `agents`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `agents` (
+  `id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  `enabled` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `cracked`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `cracked` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `hashlist_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '(DC2Type:guid)',
+  `plain` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `cracked_hashlist_id_foreign` (`hashlist_id`),
+  CONSTRAINT `cracked_hashlist_id_foreign` FOREIGN KEY (`hashlist_id`) REFERENCES `hashlists` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `failed_jobs`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `failed_jobs` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `uuid` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `connection` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `queue` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `payload` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `exception` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `failed_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `failed_jobs_uuid_unique` (`uuid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `force_tasks`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `force_tasks` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `agent_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `status` enum('todo','done') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'todo',
+  `action` enum('stop') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'stop',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `hashlists`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `hashlists` (
+  `id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '(DC2Type:guid)',
+  `hashtype_id` int(11) NOT NULL,
+  `link` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `count` int(11) NOT NULL DEFAULT 0,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `name` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  `status` enum('todo','valid','error') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'todo',
+  PRIMARY KEY (`id`),
+  KEY `hashlists_hashtype_id_foreign` (`hashtype_id`),
+  CONSTRAINT `hashlists_hashtype_id_foreign` FOREIGN KEY (`hashtype_id`) REFERENCES `hashtypes` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `hashtypes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `hashtypes` (
+  `id` int(11) NOT NULL,
+  `name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `salted` tinyint(1) NOT NULL DEFAULT 0,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `enabled` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `inventory`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `inventory` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `size` bigint(20) NOT NULL,
+  `checksum` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `count` bigint(20) NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `type` enum('wordlist','rule') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'wordlist',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `inventory_name_type_checksum_unique` (`name`,`type`,`checksum`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `jobs`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `jobs` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `task_id` bigint(20) unsigned NOT NULL,
+  `agent_id` char(36) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `skip` bigint(20) unsigned NOT NULL DEFAULT 0,
+  `limit` bigint(20) unsigned NOT NULL DEFAULT 0,
+  `cracked` int(11) NOT NULL DEFAULT 0,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  `errors` int(11) NOT NULL DEFAULT 0,
+  `status` enum('todo','done','running','error') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'todo',
+  `spend_time` int(11) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  KEY `jobs_agent_id_foreign` (`agent_id`),
+  KEY `jobs_task_id_foreign` (`task_id`),
+  CONSTRAINT `jobs_task_id_foreign` FOREIGN KEY (`task_id`) REFERENCES `tasks` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `migrations`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `migrations` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `migration` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `batch` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `password_resets`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `password_resets` (
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `token` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  KEY `password_resets_email_index` (`email`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `pot`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `pot` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `hashlist_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `pot_data` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `pot_hashlist_id_foreign` (`hashlist_id`),
+  CONSTRAINT `pot_hashlist_id_foreign` FOREIGN KEY (`hashlist_id`) REFERENCES `hashlists` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `tasks`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tasks` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `hashlist_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '(DC2Type:guid)',
+  `template_id` bigint(20) unsigned NOT NULL,
+  `priority` int(11) NOT NULL DEFAULT 0,
+  `status` enum('done','stopped','cancelled','todo','error') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'todo',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `tasks_hashlist_id_foreign` (`hashlist_id`),
+  KEY `tasks_template_id_foreign` (`template_id`),
+  CONSTRAINT `tasks_template_id_foreign` FOREIGN KEY (`template_id`) REFERENCES `templates` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `telegram`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `telegram` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `chat_id` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `token` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `enabled` tinyint(1) NOT NULL DEFAULT 0,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `template_mask`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `template_mask` (
+  `template_id` bigint(20) unsigned NOT NULL,
+  `mask` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `charset1` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `charset2` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `charset3` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `charset4` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`template_id`),
+  CONSTRAINT `template_mask_template_id_foreign` FOREIGN KEY (`template_id`) REFERENCES `templates` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `template_speed_stats`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `template_speed_stats` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `agent_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `template_id` bigint(20) NOT NULL,
+  `hashtype_id` bigint(20) NOT NULL,
+  `speed` bigint(20) NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `template_speed_stats_agent_id_template_id_hashtype_id_unique` (`agent_id`,`template_id`,`hashtype_id`),
+  CONSTRAINT `template_speed_stats_agent_id_foreign` FOREIGN KEY (`agent_id`) REFERENCES `agents` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `template_wordlist`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `template_wordlist` (
+  `template_id` bigint(20) unsigned NOT NULL,
+  `wordlist_id` bigint(20) unsigned NOT NULL,
+  `rule_id` bigint(20) unsigned DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`template_id`),
+  KEY `template_wordlist_wordlist_id_foreign` (`wordlist_id`),
+  KEY `template_wordlist_rule_id_foreign` (`rule_id`),
+  CONSTRAINT `template_wordlist_rule_id_foreign` FOREIGN KEY (`rule_id`) REFERENCES `inventory` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `template_wordlist_template_id_foreign` FOREIGN KEY (`template_id`) REFERENCES `templates` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `template_wordlist_wordlist_id_foreign` FOREIGN KEY (`wordlist_id`) REFERENCES `inventory` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `templates`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `templates` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `keyspace` bigint(20) unsigned NOT NULL DEFAULT 0,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `name` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `type` enum('mask','wordlist') COLLATE utf8mb4_unicode_ci NOT NULL,
+  `status` enum('todo','error','valid') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'todo',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `users`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `users` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email_verified_at` timestamp NULL DEFAULT NULL,
+  `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `remember_token` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `users_email_unique` (`email`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+INSERT INTO `migrations` VALUES (7,'2014_10_12_000000_create_users_table',1);
+INSERT INTO `migrations` VALUES (8,'2014_10_12_100000_create_password_resets_table',1);
+INSERT INTO `migrations` VALUES (9,'2019_08_19_000000_create_failed_jobs_table',1);
+INSERT INTO `migrations` VALUES (10,'2021_01_23_154817_create_agents_table',1);
+INSERT INTO `migrations` VALUES (11,'2021_01_23_155056_create_agent_logs_table',1);
+INSERT INTO `migrations` VALUES (12,'2021_01_23_155542_create_agent_info_table',1);
+INSERT INTO `migrations` VALUES (13,'2021_01_23_155848_create_inventory_table',2);
+INSERT INTO `migrations` VALUES (14,'2021_01_23_160731_create_agent_inventory_table',3);
+INSERT INTO `migrations` VALUES (15,'2021_01_23_162836_create_hashtypes_table',4);
+INSERT INTO `migrations` VALUES (16,'2021_01_23_163050_create_agent_stats_table',5);
+INSERT INTO `migrations` VALUES (17,'2021_01_23_163423_create_templates_table',6);
+INSERT INTO `migrations` VALUES (18,'2021_01_23_163705_create_template_mask_table',7);
+INSERT INTO `migrations` VALUES (19,'2021_01_23_164236_create_template_wordlist_table',8);
+INSERT INTO `migrations` VALUES (20,'2021_01_23_173130_create_hashlists_table',9);
+INSERT INTO `migrations` VALUES (21,'2021_01_23_173501_create_cracked_table',10);
+INSERT INTO `migrations` VALUES (22,'2021_01_23_173829_create_tasks_table',11);
+INSERT INTO `migrations` VALUES (23,'2021_01_23_174348_create_jobs_table',12);
+INSERT INTO `migrations` VALUES (24,'2021_01_23_181055_add_enabled_to_hashtypes',13);
+INSERT INTO `migrations` VALUES (25,'2021_01_30_175547_change_agent_info_foreign_key',14);
+INSERT INTO `migrations` VALUES (26,'2021_01_30_184104_change_agent_inventory_foreign_key',15);
+INSERT INTO `migrations` VALUES (27,'2021_01_31_161239_change_hashlist_storage',16);
+INSERT INTO `migrations` VALUES (28,'2021_01_31_161546_change_hashlist_storage_update_column',17);
+INSERT INTO `migrations` VALUES (29,'2021_01_31_180734_hashlists_add_name',18);
+INSERT INTO `migrations` VALUES (30,'2021_01_31_181118_hashlists_change_foreign_key',19);
+INSERT INTO `migrations` VALUES (31,'2021_01_31_184203_cracked_change_foreign_key',20);
+INSERT INTO `migrations` VALUES (32,'2021_01_31_191556_hashlist_softdelete',21);
+INSERT INTO `migrations` VALUES (33,'2021_01_31_192618_agents_enabled_softdelete',22);
+INSERT INTO `migrations` VALUES (34,'2021_02_01_190928_agent_stats_foreign_change',23);
+INSERT INTO `migrations` VALUES (35,'2021_02_01_192450_agent_stats_2_foreign_change',24);
+INSERT INTO `migrations` VALUES (36,'2021_02_01_202910_remove_hashcat_keyspace',25);
+INSERT INTO `migrations` VALUES (37,'2021_02_01_203102_add_name_and_softdelete',26);
+INSERT INTO `migrations` VALUES (38,'2021_02_04_190210_template_mask_fix',27);
+INSERT INTO `migrations` VALUES (39,'2021_02_04_190726_template_wordlist_fix',28);
+INSERT INTO `migrations` VALUES (40,'2021_02_05_170607_update_enum_template',29);
+INSERT INTO `migrations` VALUES (41,'2021_02_05_170806_update_enum_add_template',30);
+INSERT INTO `migrations` VALUES (42,'2021_02_05_173805_template_wordlist_null_rule_id',31);
+INSERT INTO `migrations` VALUES (43,'2021_02_05_174812_template_mask_null_update',32);
+INSERT INTO `migrations` VALUES (44,'2021_02_05_180136_template_wordlist_soft_delete',33);
+INSERT INTO `migrations` VALUES (45,'2021_02_05_181641_tasks_key_and_soft_delete',34);
+INSERT INTO `migrations` VALUES (46,'2021_02_05_181710_jobss_key_and_soft_delete',35);
+INSERT INTO `migrations` VALUES (47,'2021_02_05_182501_jobs_agents_key',36);
+INSERT INTO `migrations` VALUES (48,'2021_02_06_200939_hashlist_validation_change',37);
+INSERT INTO `migrations` VALUES (49,'2021_02_07_153652_jobs_agent_null',38);
+INSERT INTO `migrations` VALUES (50,'2021_02_07_173837_template_valid_to_status',39);
+INSERT INTO `migrations` VALUES (51,'2021_02_07_183303_template_mask_value_to_mask',40);
+INSERT INTO `migrations` VALUES (52,'2021_02_08_190705_inv_soft_delete',41);
+INSERT INTO `migrations` VALUES (53,'2021_02_08_191002_agent_inv_soft_delete',42);
+INSERT INTO `migrations` VALUES (54,'2021_02_08_195424_template_wordlist_cascade',43);
+INSERT INTO `migrations` VALUES (55,'2021_02_08_195433_template_mask_cascade',43);
+INSERT INTO `migrations` VALUES (56,'2021_02_08_201205_template_wordlist_2_cascade',44);
+INSERT INTO `migrations` VALUES (57,'2021_02_08_205723_agent_inv_cascade',45);
+INSERT INTO `migrations` VALUES (58,'2021_02_09_191456_inv_uniq_change',46);
+INSERT INTO `migrations` VALUES (59,'2021_02_09_192012_inv_uniq_new',47);
+INSERT INTO `migrations` VALUES (60,'2021_02_15_175820_templates_enum',48);
+INSERT INTO `migrations` VALUES (61,'2021_02_15_180133_templates_enum_add',49);
+INSERT INTO `migrations` VALUES (62,'2021_02_16_204312_tasks_hashlist_id_drop',50);
+INSERT INTO `migrations` VALUES (63,'2021_02_16_204324_cracked_hashlist_id_drop',51);
+INSERT INTO `migrations` VALUES (64,'2021_02_16_205115_tasks_hashlist_id_drop',52);
+INSERT INTO `migrations` VALUES (65,'2021_02_16_205122_cracked_hashlist_id_drop',52);
+INSERT INTO `migrations` VALUES (66,'2021_02_16_205209_hashlists_uuid',53);
+INSERT INTO `migrations` VALUES (67,'2021_02_16_205417_cracked_hashlist_id_change_and_create',54);
+INSERT INTO `migrations` VALUES (68,'2021_02_16_205425_tasks_hashlist_id_change_and_create',55);
+INSERT INTO `migrations` VALUES (69,'2021_02_20_193434_enum_inv',56);
+INSERT INTO `migrations` VALUES (70,'2021_02_20_193922_inventory_uniq',57);
+INSERT INTO `migrations` VALUES (71,'2021_02_20_203830_job_skip_limit',58);
+INSERT INTO `migrations` VALUES (72,'2021_02_20_204218_job_status_add_error',59);
+INSERT INTO `migrations` VALUES (73,'2021_02_20_205147_cracked_pot_remove',60);
+INSERT INTO `migrations` VALUES (74,'2021_02_20_205308_create_pot_table',61);
+INSERT INTO `migrations` VALUES (75,'2021_02_23_202027_soft_delete_agent_remove',62);
+INSERT INTO `migrations` VALUES (76,'2021_02_24_172805_remove_soft_delete_inv',63);
+INSERT INTO `migrations` VALUES (77,'2021_02_27_183948_template_mask_fix_charset',64);
+INSERT INTO `migrations` VALUES (78,'2021_02_28_140039_fix_fk_agent_logs',65);
+INSERT INTO `migrations` VALUES (79,'2021_03_01_193436_create_template_speed_stats_table',66);
+INSERT INTO `migrations` VALUES (80,'2021_03_02_180650_time_spend_jobs',67);
+INSERT INTO `migrations` VALUES (81,'2021_03_03_193258_agent_info_key_cascade',68);
+INSERT INTO `migrations` VALUES (82,'2021_03_03_193315_agent_inventory_key_cascade',68);
+INSERT INTO `migrations` VALUES (83,'2021_03_03_193348_agent_logs_cascade',68);
+INSERT INTO `migrations` VALUES (84,'2021_03_03_193410_agent_stats_cascade',68);
+INSERT INTO `migrations` VALUES (85,'2021_03_03_194400_fix_fk_jobs',69);
+INSERT INTO `migrations` VALUES (86,'2021_03_03_194555_fix_fk_tasks',70);
+INSERT INTO `migrations` VALUES (87,'2021_03_03_194718_fix_fk_templates',71);
+INSERT INTO `migrations` VALUES (88,'2021_03_03_195046_fix_fk_template_wordlist',71);
+INSERT INTO `migrations` VALUES (89,'2021_03_03_195056_fix_fk_template_mask',71);
+INSERT INTO `migrations` VALUES (90,'2021_03_03_195536_fix_fk_template_stats',72);
+INSERT INTO `migrations` VALUES (91,'2021_03_07_152353_create_channels_table',73);
+INSERT INTO `migrations` VALUES (92,'2021_03_07_200937_create_force_tasks_table',74);
+INSERT INTO `migrations` VALUES (93,'2021_03_09_215542_create_telegram_table',75);
+INSERT INTO `migrations` VALUES (94,'2021_03_13_143025_drop_channels_table',75);
