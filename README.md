@@ -88,7 +88,7 @@ sudo apt-get install -y dotnet-sdk-5.0
 
 
 2. To compile agent from source code, go to agent folder and run the next command: ```dotnet build --configuration Release```. After that in ```Kracker.App/bin/Release/net5.0``` folder you will get the built project.
-3. You need to download hashcat from the official page at https://hashcat.net/hashcat/,  unpack it into the agent's folder.
+3. You need to download **hashcat** from the official page at  [https://hashcat.net/hashcat/](https://hashcat.net/hashcat/),  unpack it into the agent's folder.
 4. Modify ```appsettings.json``` in ```Kracker.App/bin/Release/net5.0``` and put **ServerURL** and **Hashcat.Path** like:
 
 ```
@@ -118,6 +118,12 @@ sudo apt-get install -y dotnet-sdk-5.0
 
 
 ### Using release
+
+In release you can find 
+- pre-installed hashcat [https://hashcat.net/hashcat/](https://hashcat.net/hashcat/)
+- rules from  [https://github.com/ttmyst/tmyst_rules](https://github.com/ttmyst/tmyst_rules)
+
+Running agent from release:
 
 1. Install .NET Core 5 runtime.
 2. Modify ```appsettings.json``` in ```Kracker.App/bin/Release/net5.0``` and put **ServerURL** and **Hashcat.Path**.
