@@ -7,7 +7,7 @@ Kraker is a distributed password brute-force system that allows you to run and m
 
 Kraker consists of two main components - a server and an agent, which communicate through a REST API. You can read about their installation and configuration below.
 
-Kraker continues to be in development, so the new functionality, documentation, and updates will be released as they become available. If you have suggestions for improvement or want to participate in the development or find bugs, bugs -  feel free to open issues, pull requests, or contact us.
+Kraker continues to be in development, so the new functionality, documentation, and updates will be released as they become available. If you have suggestions for improvement or want to participate in the development or find bugs, bugs -  feel free to open issues, pull requests, or contact us: [@_w34kp455](https://twitter.com/w34kp455) and [@_asSheShouldBe](https://twitter.com/asSheShouldBe).
 
 ## Server
 
@@ -49,7 +49,7 @@ https://dotnet.microsoft.com/download/dotnet/5.0
 * Linux - https://docs.microsoft.com/ru-ru/dotnet/core/install/linux
 * Windows -https://dotnet.microsoft.com/download/dotnet/thank-you/runtime-5.0.4-windows-x64-installer
 
-#### Debian install sample:
+#### Install from source:
 ```
 wget https://packages.microsoft.com/config/debian/10/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
 sudo dpkg -i packages-microsoft-prod.deb
@@ -65,7 +65,7 @@ sudo apt-get install -y dotnet-sdk-5.0
 
 
 2. You need to download hashcat from the official page at https://hashcat.net/hashcat/,  unpack it into the agent's folder.
-3. Modify appsettings.json in ```Kracker.App/bin/Release/net5.0``` and put ServerURL and Hashcat.Path like:
+3. Modify ```appsettings.json``` in ```Kracker.App/bin/Release/net5.0``` and put ServerURL and Hashcat.Path like:
 
 ```
 {
@@ -82,11 +82,16 @@ sudo apt-get install -y dotnet-sdk-5.0
 }
 
 ```
-
+4. Create a folder wordlist and rule and put there your favorite wordlist and rules.
+5. You can copy-paste the agent folder from server to server for easy setup. Happy cracking!
 
 ![agent_setup](docs/pics/agent_setup.gif)
 
 
+## Contacts
 
+- [@_w34kp455](https://twitter.com/w34kp455)
+- [@_asSheShouldBe](https://twitter.com/asSheShouldBe)
+- [https://weakpass.com](https://weakpass.com)
 
 
