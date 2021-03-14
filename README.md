@@ -119,7 +119,7 @@ sudo apt-get install -y dotnet-sdk-5.0
 
 ### Using release
 
-In release you can find 
+In release you can find:
 - pre-installed hashcat [https://hashcat.net/hashcat/](https://hashcat.net/hashcat/)
 - rules from  [https://github.com/ttmyst/tmyst_rules](https://github.com/ttmyst/tmyst_rules)
 
