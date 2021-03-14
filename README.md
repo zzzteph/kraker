@@ -36,7 +36,7 @@ sudo docker-compose exec app php artisan db:seed --class=UserSeeder
 
 ## Agent
 
-It is written in .NET Core5 and works on any OS where this framework is available - Linux, Windows, MacOS (not tested yet). The agent is responsible for performing brute-force tasks that it receives from the server.
+It is written in .NET Core 5 and works on any OS where this framework is available - Linux, Windows, MacOS (not tested yet). The agent is responsible for performing brute-force tasks that it receives from the server.
 
 
 ### Setup
