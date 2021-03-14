@@ -58,6 +58,7 @@ sudo apt-get install -y apt-transport-https
 sudo apt-get update
 sudo apt-get install -y dotnet-sdk-5.0
 ```
+![agent_setup](docs/pics/agent_setup.gif)
 
 After that, you need to download hashcat from the official page at https://hashcat.net/hashcat/,  unpack it into the agent's folder and hashcat path to the appsettings.json.
 
