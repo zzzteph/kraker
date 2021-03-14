@@ -54,6 +54,12 @@ sudo docker-compose exec app php artisan db:seed --class=UserSeeder
 
 ```
 
+Navigate the server IP address and enter the next credentials:
+
+- Login: admin
+- Password: kraker
+
+
 
 ## Agent
 
