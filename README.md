@@ -21,6 +21,10 @@
 
 **Kraker** continues to be in development, so the new functionality, documentation, and updates will be released as they become available. If you have suggestions for improvement or want to participate in the development or find bugs -  feel free to open issues, pull requests, or contact us: [@_w34kp455](https://twitter.com/w34kp455) and [@_asSheShouldBe](https://twitter.com/asSheShouldBe).
 
+
+
+
+
 # Setup
 
 Here you can find a manual on how to setup your own server, build an agent from the source and run it. You always can download a Release that is already built and run it.
