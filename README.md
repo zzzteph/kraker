@@ -41,7 +41,7 @@ It is written in .NET Core 5 and works on any OS where this framework is availab
 
 ### Setup
 
-For the agent to work on the host, you need to install .NET Core5, which can be downloaded from the following link:
+For the agent to work on the host, you need to install .NET Core 5, which can be downloaded from the following link:
 
 https://dotnet.microsoft.com/download/dotnet/5.0
 
@@ -49,6 +49,8 @@ https://dotnet.microsoft.com/download/dotnet/5.0
 * Windows -https://dotnet.microsoft.com/download/dotnet/thank-you/runtime-5.0.4-windows-x64-installer
 
 #### Build from source:
+1. Install .NET Core 5 SDK.
+
 ```
 wget https://packages.microsoft.com/config/debian/10/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
 sudo dpkg -i packages-microsoft-prod.deb
