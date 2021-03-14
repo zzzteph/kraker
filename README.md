@@ -6,7 +6,7 @@
 
 **Kraker** consists of two main components - a server and an agent, which communicate through a REST API. You can read about their installation and configuration below.
 
-**Kraker** continues to be in development, so the new functionality, documentation, and updates will be released as they become available. If you have suggestions for improvement or want to participate in the development or find bugs, bugs -  feel free to open issues, pull requests, or contact us: [@_w34kp455](https://twitter.com/w34kp455) and [@_asSheShouldBe](https://twitter.com/asSheShouldBe).
+**Kraker** continues to be in development, so the new functionality, documentation, and updates will be released as they become available. If you have suggestions for improvement or want to participate in the development or find bugs -  feel free to open issues, pull requests, or contact us: [@_w34kp455](https://twitter.com/w34kp455) and [@_asSheShouldBe](https://twitter.com/asSheShouldBe).
 
 ## Server
 
