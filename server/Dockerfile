@@ -1,4 +1,4 @@
-
+  
 FROM php:7.4-fpm
 
 # Arguments defined in docker-compose.yml
@@ -13,9 +13,7 @@ RUN apt-get update && apt-get install -y \
     libonig-dev \
     libxml2-dev \
     zip \
-    unzip \
-    procps
-
+    unzip mariadb-client procps
 
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
@@ -30,12 +28,10 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 RUN useradd -G www-data,root -u $uid -d /home/$user $user
 RUN mkdir -p /home/$user/.composer && \
     chown -R $user:$user /home/$user
-
-COPY queue.sh /usr/local/bin/queue
-RUN chmod +x /usr/local/bin/queue
 # Set working directory
 WORKDIR /var/www
 
 USER $user
-
-CMD ["/usr/local/bin/queue"]
+COPY ./init.sh /
+#ENTRYPOINT /init.sh
+ENTRYPOINT ["bash", "/init.sh"]
