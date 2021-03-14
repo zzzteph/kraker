@@ -59,7 +59,10 @@ sudo apt-get update
 sudo apt-get install -y dotnet-sdk-5.0
 ```
 
-![agent_setup](docs/pics/dotnet_install.gif)
+<p align="center">
+  <img src="https://github.com/zzzteph/Kraker/blob/main/docs/pics/dotnet_install.gif?raw=true">
+</p>
+
 
 1. To compile agent from source code you go agent folder and run next command: ```dotnet build --configuration Release```. After that in ```Kracker.App/bin/Release/net5.0``` folder you will get builded project.
 
@@ -85,7 +88,11 @@ sudo apt-get install -y dotnet-sdk-5.0
 4. Create a folder wordlist and rule and put there your favorite wordlist and rules.
 5. You can copy-paste the agent folder from server to server for easy setup. Happy cracking!
 
-![agent_setup](docs/pics/agent_setup.gif)
+
+<p align="center">
+  <img src="https://github.com/zzzteph/Kraker/blob/main/docs/pics/agent_setup.gif?raw=true">
+</p>
+
 
 
 ## Contacts
