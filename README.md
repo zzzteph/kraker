@@ -1,13 +1,12 @@
-# Kraker
 <p align="center">
   <img src="https://github.com/zzzteph/Kraker/blob/main/docs/pics/cracker.png?raw=true"  height="350">
 </p>
 
-Kraker is a distributed password brute-force system that allows you to run and manage the hashcat program on different servers and workstations, while working with hashcat is absolutely not required. There were two main goals during the design and development: to create the most simple tool for distributed hash cracking and make it fault-tolerant.
+**Kraker** is a distributed password brute-force system that allows you to run and manage the hashcat program on different servers and workstations, while working with hashcat is absolutely not required. There were two main goals during the design and development: to create the most simple tool for distributed hash cracking and make it fault-tolerant.
 
-Kraker consists of two main components - a server and an agent, which communicate through a REST API. You can read about their installation and configuration below.
+**Kraker** consists of two main components - a server and an agent, which communicate through a REST API. You can read about their installation and configuration below.
 
-Kraker continues to be in development, so the new functionality, documentation, and updates will be released as they become available. If you have suggestions for improvement or want to participate in the development or find bugs, bugs -  feel free to open issues, pull requests, or contact us: [@_w34kp455](https://twitter.com/w34kp455) and [@_asSheShouldBe](https://twitter.com/asSheShouldBe).
+**Kraker** continues to be in development, so the new functionality, documentation, and updates will be released as they become available. If you have suggestions for improvement or want to participate in the development or find bugs, bugs -  feel free to open issues, pull requests, or contact us: [@_w34kp455](https://twitter.com/w34kp455) and [@_asSheShouldBe](https://twitter.com/asSheShouldBe).
 
 ## Server
 
@@ -49,7 +48,7 @@ https://dotnet.microsoft.com/download/dotnet/5.0
 * Linux - https://docs.microsoft.com/ru-ru/dotnet/core/install/linux
 * Windows -https://dotnet.microsoft.com/download/dotnet/thank-you/runtime-5.0.4-windows-x64-installer
 
-#### Install from source:
+#### Build from source:
 ```
 wget https://packages.microsoft.com/config/debian/10/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
 sudo dpkg -i packages-microsoft-prod.deb
@@ -64,9 +63,7 @@ sudo apt-get install -y dotnet-sdk-5.0
 </p>
 
 
-1. To compile agent from source code you go agent folder and run next command: ```dotnet build --configuration Release```. After that in ```Kracker.App/bin/Release/net5.0``` folder you will get builded project.
-
-
+1. To compile agent from source code, go to agent folder and run the next command: ```dotnet build --configuration Release```. After that in ```Kracker.App/bin/Release/net5.0``` folder you will get the built project.
 2. You need to download hashcat from the official page at https://hashcat.net/hashcat/,  unpack it into the agent's folder.
 3. Modify ```appsettings.json``` in ```Kracker.App/bin/Release/net5.0``` and put ServerURL and Hashcat.Path like:
 
