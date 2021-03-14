@@ -2,7 +2,7 @@
   <img src="https://github.com/zzzteph/Kraker/blob/main/docs/pics/cracker.png?raw=true"  height="350">
 </p>
 
-**Kraker** is a distributed password brute-force system that allows you to run and manage the hashcat program on different servers and workstations, while working with hashcat is absolutely not required. There were two main goals during the design and development: to create the most simple tool for distributed hash cracking and make it fault-tolerant.
+**Kraker** is a distributed password brute-force system that allows you to run and manage the hashcat on different servers and workstations, focused on easy of use. There were two main goals during the design and development: to create the most simple tool for distributed hash cracking and make it fault-tolerant.
 
 **Kraker** consists of two main components - a server and an agent, which communicate through a REST API. You can read about their installation and configuration below.
 
