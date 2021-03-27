@@ -14,10 +14,9 @@ namespace Kracker.Base.Domain.HashCat
 
     public class ArgumentsBuilder : IArgumentsBuilder
     {
-        private readonly string _options;
         private readonly string _force;
         private readonly IInventoryManager _inventoryManager;
-
+        private readonly string _options;
         private readonly WorkedFolders _workedFolders;
 
         public ArgumentsBuilder(IWorkedFoldersProvider workedFoldersProvider,
@@ -40,11 +39,7 @@ namespace Kracker.Base.Domain.HashCat
             {
                 SpeedStatJob ssj => $"{_force}-b -m {ssj.HashTypeId} --machine-readable",
                 TemplateBruteforceJob tmj => $"{_force}{_options} --keyspace -a 3 "
-                                             + (tmj.Charset1 is null ? string.Empty : $"-1 {tmj.Charset1} ")
-                                             + (tmj.Charset2 is null ? string.Empty : $"-2 {tmj.Charset2} ")
-                                             + (tmj.Charset3 is null ? string.Empty : $"-3 {tmj.Charset3} ")
-                                             + (tmj.Charset4 is null ? string.Empty : $"-4 {tmj.Charset4} ")
-                                             + tmj.Mask,
+                                             + BuildAttackConfiguration(tmj),
 
                 TemplateWordListJob twl => $"{_force}{_options} --keyspace {BuildRule(twl.RuleId, inventory)}"
                                            + $" \"{Path.Combine(_workedFolders.WordlistPath, inventory.Map[twl.WordlistId].Name)}\"",
@@ -54,11 +49,7 @@ namespace Kracker.Base.Domain.HashCat
                 BruteforceJob bfj => $"{_force}{_options} --skip={bfj.Skip} --limit={bfj.Limit} -m {bfj.HashTypeId} "
                                      + $" --outfile=\"{paths.OutputFile}\" "
                                      + $"{BuildFilePaths(paths)} -a 3 "
-                                     + (bfj.Charset1 is null ? string.Empty : $"-1 {bfj.Charset1} ")
-                                     + (bfj.Charset2 is null ? string.Empty : $"-2 {bfj.Charset2} ")
-                                     + (bfj.Charset3 is null ? string.Empty : $"-3 {bfj.Charset3} ")
-                                     + (bfj.Charset4 is null ? string.Empty : $"-4 {bfj.Charset4} ")
-                                     + bfj.Mask,
+                                     + BuildAttackConfiguration(bfj),
 
                 WordListJob wlj => $"{_force}{_options} --skip={wlj.Skip} --limit={wlj.Limit} -m {wlj.HashTypeId} "
                                    + BuildRule(wlj.RuleId, inventory)
@@ -68,6 +59,13 @@ namespace Kracker.Base.Domain.HashCat
                 _ => throw new InvalidOperationException($"Can't build hascat arguments for {job}")
             };
         }
+
+        private string BuildAttackConfiguration(IAttackConfiguration configuration) =>
+            (configuration.Charset1 is null ? string.Empty : $"-1 {configuration.Charset1} ")
+            + (configuration.Charset2 is null ? string.Empty : $"-2 {configuration.Charset2} ")
+            + (configuration.Charset3 is null ? string.Empty : $"-3 {configuration.Charset3} ")
+            + (configuration.Charset4 is null ? string.Empty : $"-4 {configuration.Charset4} ")
+            + configuration.Mask;
 
         private string BuildRule(long? ruleId, Inventory.Inventory inventory) =>
             ruleId.HasValue

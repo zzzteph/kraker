@@ -14,7 +14,7 @@ namespace Kracker.Base.Services.Model.Jobs
         string Charset3,
         string Charset4,
         string Content,
-        string PotContent) : AbstractJob(JobType.Bruteforce)
+        string PotContent) : AbstractJob(JobType.Bruteforce), IAttackConfiguration
     {
         [JsonPropertyName("job_id")] 
         public long JobId { get; init; } = JobId;

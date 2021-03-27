@@ -7,7 +7,7 @@ namespace Kracker.Base.Services.Model.Jobs
         string Charset1,
         string Charset2,
         string Charset3,
-        string Charset4) : TemplateJob(TemplateId, JobType.TemplateBruteforce)
+        string Charset4) : TemplateJob(TemplateId, JobType.TemplateBruteforce), IAttackConfiguration
     {
         public override JobDescription GetDescription()
             => new(TemplateBruteforce, TemplateId);
