@@ -40,11 +40,11 @@ namespace Kracker.Base.Domain.HashCat
             {
                 SpeedStatJob ssj => $"{_force}-b -m {ssj.HashTypeId} --machine-readable",
                 TemplateBruteforceJob tmj => $"{_force}{_options} --keyspace -a 3 "
-                                       + (tmj.Charset1 is null ? string.Empty : $"-1 {tmj.Charset1} ")
-                                       + (tmj.Charset2 is null ? string.Empty : $"-2 {tmj.Charset2} ")
-                                       + (tmj.Charset3 is null ? string.Empty : $"-3 {tmj.Charset3} ")
-                                       + (tmj.Charset4 is null ? string.Empty : $"-4 {tmj.Charset4} ")
-                                       + tmj.Mask,
+                                             + (tmj.Charset1 is null ? string.Empty : $"-1 {tmj.Charset1} ")
+                                             + (tmj.Charset2 is null ? string.Empty : $"-2 {tmj.Charset2} ")
+                                             + (tmj.Charset3 is null ? string.Empty : $"-3 {tmj.Charset3} ")
+                                             + (tmj.Charset4 is null ? string.Empty : $"-4 {tmj.Charset4} ")
+                                             + tmj.Mask,
 
                 TemplateWordListJob twl => $"{_force}{_options} --keyspace {BuildRule(twl.RuleId, inventory)}"
                                            + $" \"{Path.Combine(_workedFolders.WordlistPath, inventory.Map[twl.WordlistId].Name)}\"",
@@ -53,7 +53,12 @@ namespace Kracker.Base.Domain.HashCat
 
                 BruteforceJob bfj => $"{_force}{_options} --skip={bfj.Skip} --limit={bfj.Limit} -m {bfj.HashTypeId} "
                                      + $" --outfile=\"{paths.OutputFile}\" "
-                                     + $"{BuildFilePaths(paths)} -a 3 {bfj.Mask}",
+                                     + $"{BuildFilePaths(paths)} -a 3 "
+                                     + (bfj.Charset1 is null ? string.Empty : $"-1 {bfj.Charset1} ")
+                                     + (bfj.Charset2 is null ? string.Empty : $"-2 {bfj.Charset2} ")
+                                     + (bfj.Charset3 is null ? string.Empty : $"-3 {bfj.Charset3} ")
+                                     + (bfj.Charset4 is null ? string.Empty : $"-4 {bfj.Charset4} ")
+                                     + bfj.Mask,
 
                 WordListJob wlj => $"{_force}{_options} --skip={wlj.Skip} --limit={wlj.Limit} -m {wlj.HashTypeId} "
                                    + BuildRule(wlj.RuleId, inventory)
