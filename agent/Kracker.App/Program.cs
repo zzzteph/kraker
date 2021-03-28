@@ -37,10 +37,10 @@ namespace Kracker.App
             Console.CancelKeyPress += (s, o) 
                 => cancelKeyPressWater.SetResult(true);
             
-            await Work(logger, config, container.GetService<IStartup>(), container.GetService<IAgentInfoProvider>());
-
             InitializeCheckInventoryTimer(logger, config, container.GetService<IInventoryManager>());
 
+            await Work(logger, config, container.GetService<IStartup>(), container.GetService<IAgentInfoProvider>());
+            
             CleanUp();
 
             RemoveYourselfFromWerExcluded();
