@@ -76,7 +76,7 @@ For the agent to work on the host, you need to install .NET Core 5, which can be
 https://dotnet.microsoft.com/download/dotnet/5.0
 
 * Linux - https://docs.microsoft.com/ru-ru/dotnet/core/install/linux
-* Windows -https://dotnet.microsoft.com/download/dotnet/thank-you/runtime-5.0.4-windows-x64-installer
+* Windows - https://dotnet.microsoft.com/download/dotnet/thank-you/runtime-5.0.4-windows-x64-installer
 
 
 ### Build from source
@@ -96,7 +96,7 @@ sudo apt-get install -y dotnet-sdk-5.0
 </p>
 
 
-2. To compile agent from source code, go to agent folder and run the next command: ```dotnet build --configuration Release```. After that in ```Kracker.App/bin/Release/net5.0``` folder you will get the built project.
+2. To compile agent from source code, go to agent folder and run the next command: ```dotnet publish --configuration Release```. After that in ```Kracker.App/bin/Release/net5.0``` folder you will get the built project.
 3. You need to download **hashcat** from the official page at  [https://hashcat.net/hashcat/](https://hashcat.net/hashcat/),  unpack it into the agent's folder.
 4. Modify ```appsettings.json``` in ```Kracker.App/bin/Release/net5.0``` and put **ServerURL** and **Hashcat.Path** like:
 
