@@ -37,13 +37,25 @@ class HashlistsController extends Controller
  
  
 
-   if ($request->hasFile('hashfile') && $request->has(['name','hashtype'])) {
-   if (!$request->file('hashfile')->isValid())     return back()->withErrors(['message' => 'File upload failed']);
+   if (($request->hasFile('hashfile')||$request->filled('hashlist_text')) && $request->has(['name','hashtype'])) {
+   if (($request->hasFile('hashfile') && !$request->file('hashfile')->isValid()) && !$request->filled('hashlist_text'))     return back()->withErrors(['message' => 'File upload failed']);
     
        
        $filename=(string) Str::uuid();
-       $path = $request->file('hashfile')->storeAs('hashlists', $filename);
-       $hashlist=new Hashlist;
+	   
+	   if($request->hasFile('hashfile') &&$request->file('hashfile')->isValid())
+	   {
+			$path = $request->file('hashfile')->storeAs('hashlists', $filename);
+	   }
+       else
+	   {
+		  $path='hashlists/'.(string) Str::uuid();
+		  Storage::disk('local')->put($path, $request->input('hashlist_text'));   
+	   }		   
+	   
+	   
+	   
+	   $hashlist=new Hashlist;
 	   $hashlist->id= $filename;
        $hashlist->hashtype_id=$request->input('hashtype');
        $hashlist->name=$request->input('name');

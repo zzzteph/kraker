@@ -34,7 +34,7 @@
    <div id="navbarBasicExample" class="navbar-menu">
     <div class="navbar-start">
       <div class="navbar-item has-dropdown is-hoverable">
-        <a class="navbar-link">
+        <a class="navbar-link" href="/">
           Task
         </a>
 
@@ -56,7 +56,7 @@
       </a>
 
       <div class="navbar-item has-dropdown is-hoverable">
-        <a class="navbar-link">
+        <a class="navbar-link" href="/templates">
           Templates
         </a>
 
@@ -73,7 +73,7 @@
 
 
       <div class="navbar-item has-dropdown is-hoverable">
-        <a class="navbar-link">
+        <a class="navbar-link" href="/hashlists">
           Hashlists
         </a>
 
@@ -96,7 +96,7 @@
 	  
 	  
       <div class="navbar-item has-dropdown is-hoverable">
-        <a class="navbar-link">
+        <a class="navbar-link" href="/hashtypes">
           Settings
         </a>
 

@@ -17,7 +17,7 @@
 		<tr>	<td>Hostname</td><td>{{$agent->hostname}}</td></tr>
 		<tr>	<td>IP</td><td>{{$agent->ip}}</td></tr>
 		<tr>	<td>hashcat</td><td>{{$agent->hashcat}}</td></tr>
-		<tr>	<td>Hardware info</td><td>{{$agent->hw}}</td></tr>
+		<tr>	<td>Hardware info</td><td>{!! nl2br(e($agent->hw)) !!}</td></tr>
 	</tbody>
 
 	</table>

@@ -54,9 +54,9 @@ class Agent extends Model
     return $this->get_info_by_key('hashcat');
 	}
 	  
-      	public function  getHwAttribute()
+    public function  getHwAttribute()
 	{ 
-    return $this->get_info_by_key('hw');
+		return $this->get_info_by_key('hw');
 	}
 	  
      

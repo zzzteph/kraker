@@ -53,6 +53,15 @@
     </div>
 </div>
       
+	  
+	<div class="field">
+        <label class="label">(Optional) Or paste hashes here</label>
+		<textarea class="textarea" name="hashlist_text"></textarea>
+
+</div>
+	  
+	  
+	  
       <div class="field">
         <div class="control">
           <button class="button is-success">Submit</button>
