@@ -41,7 +41,7 @@ namespace Kracker.Base.Domain
                     return;
             }
                 
-            agentId = (await _krakerApi.RegisterAgent()).Id
+            agentId = (await _krakerApi.RegisterAgent())?.Id
                 ?? throw new InvalidOperationException("Got agent id == null");
             
             await _krakerApi.SendAgentInfo(agentId, agentInfo);

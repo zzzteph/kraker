@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using Kracker.Base.Domain.AgentId;
 using Kracker.Base.Domain.Folders;
 using Kracker.Base.Services;
-using Kracker.Base.Tools;
 using Serilog;
 using static Kracker.Base.Domain.Constants;
 
@@ -22,15 +21,14 @@ namespace Kracker.Base.Domain.Inventory
 
     public class InventoryManager : IInventoryManager
     {
+        private readonly IAgentIdManager _agentIdManager;
         private readonly IFileDescriptionBuilder _descriptionBuilder;
-        private readonly string _inventoryFilePath;
+        private readonly IKrakerApi _krakerApi;
         private readonly ILogger _logger;
         private readonly WorkedFolders _workedFolders;
-        private readonly IAgentIdManager _agentIdManager;
+        private Inventory _currentInventory;
 
         private Dictionary<string, FileDescription> _fileDescriptions;
-        private Inventory _currentInventory;
-        private readonly IKrakerApi _krakerApi;
 
         public InventoryManager(
             AppFolder appFolder,
@@ -45,8 +43,7 @@ namespace Kracker.Base.Domain.Inventory
             _krakerApi = krakerApi;
             _agentIdManager = agentIdManager;
             _workedFolders = workedFoldersProvider.Get();
-            _inventoryFilePath = Path.Combine(appFolder.Value, ArtefactsFolder, InventoryFile);
-
+            
             _fileDescriptions = new Dictionary<string, FileDescription>();
             _currentInventory = new Inventory(_fileDescriptions.Values);
         }
@@ -54,28 +51,25 @@ namespace Kracker.Base.Domain.Inventory
         public async Task Initialize()
         {
             _fileDescriptions = Directory.GetFiles(_workedFolders.RulesPath)
-                    .Concat(Directory.GetFiles(_workedFolders.WordlistPath))
-                    .ToDictionary(p => p, _descriptionBuilder.Build);
+                .Concat(Directory.GetFiles(_workedFolders.WordlistPath))
+                .ToDictionary(p => p, _descriptionBuilder.Build);
 
-                File.WriteAllText(_inventoryFilePath, JsonSerializer.Serialize(_fileDescriptions));
-
-                var agentId = GetAgentId();
-                var files = await _krakerApi.SendAgentInventory(agentId, _fileDescriptions.Values);
-                _currentInventory = new Inventory(files);
+            var agentId = GetAgentId();
+            var files = await _krakerApi.SendAgentInventory(agentId, _fileDescriptions.Values);
+            _currentInventory = new Inventory(files);
         }
 
-        public Inventory GetCurrent() => _currentInventory;
-
-        private string GetAgentId() 
-            =>_agentIdManager.GetCurrent().Id ?? throw new InvalidOperationException("The agent needs to have id");
-
+        public Inventory GetCurrent()
+        {
+            return _currentInventory;
+        }
 
         public async Task UpdateFileDescriptions()
         {
             _logger.Information("[inventory] Time to check inventory!");
 
             var isChanged = false;
-            
+
             var currentFiles = Directory.GetFiles(_workedFolders.RulesPath)
                 .Concat(Directory.GetFiles(_workedFolders.WordlistPath))
                 .ToList();
@@ -110,7 +104,6 @@ namespace Kracker.Base.Domain.Inventory
             if (isChanged)
             {
                 _logger.Information("[inventory] Changes've detected, save data");
-                File.WriteAllText(_inventoryFilePath, JsonSerializer.Serialize(_fileDescriptions));
                 
                 var agentId = GetAgentId();
                 var files = await _krakerApi.SendAgentInventory(agentId, _fileDescriptions.Values);
@@ -121,5 +114,7 @@ namespace Kracker.Base.Domain.Inventory
                 _logger.Information("[inventory] Checking has finished, changes've not detected");
             }
         }
+
+        private string GetAgentId() => _agentIdManager.GetCurrent().Id ?? throw new InvalidOperationException("The agent needs to have id");
     }
 }
