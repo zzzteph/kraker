@@ -1,10 +1,12 @@
 using System;
 using System.IO;
 using System.Net.Http;
+using System.Text.Json;
 using Kracker.Base.Domain.Configuration;
 using Kracker.Base.Domain.Folders;
 using Kracker.Base.Domain.Jobs;
 using Kracker.Base.Services;
+using Kracker.Base.Tools;
 using Microsoft.Extensions.DependencyInjection;
 using Polly;
 using Polly.Extensions.Http;
@@ -20,16 +22,23 @@ namespace Kracker.Base.Injection
         
         public static IServiceCollection RegisterKrakerApi(this IServiceCollection services, Config config)
         {
-            services.AddRefitClient<IKrakerApi>()
+            services.AddRefitClient<IKrakerApi>(new RefitSettings
+                {
+                    ContentSerializer = new CustomSystemTextJsonContentSerializer(new JsonSerializerOptions
+                    {
+                        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                        WriteIndented = true
+                    })
+                })
                 .ConfigureHttpClient(client => { client.BaseAddress = new Uri(config.ServerUrl); })
                 .AddPolicyHandler(HttpPolicyExtensions
                     .HandleTransientHttpError()
-                    .Or<HttpRequestException>()
-                    //.OrResult(responce=> (int) responce.StatusCode >= 400)
+                    .Or<ApiException>()
                     .WaitAndRetryAsync(3,
                         attempt => TimeSpan.FromMilliseconds(300),
                         (ex, span) => Log.Error("{0} for {1} {2}. {3} ",
-                            ex.Result.StatusCode, ex.Result.RequestMessage.Method,
+                            ex.Result.StatusCode,
+                            ex.Result.RequestMessage.Method,
                             ex.Result.RequestMessage.RequestUri?.AbsoluteUri,
                             ex.Exception)));
 

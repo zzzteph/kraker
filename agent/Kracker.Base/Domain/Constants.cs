@@ -4,7 +4,6 @@ namespace Kracker.Base.Domain
     {
         public const string ArtefactsFolder = "artefacts";
         public const string AgentInfoFile = "agent-info.json";
-        public const string InventoryFile = "inventory.json";
         public const string WordlistsFolder = "wordlist";
         public const string RulesFolder = "rule";
         public const string TempFolder = "tmp";
