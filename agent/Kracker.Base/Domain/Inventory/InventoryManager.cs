@@ -31,7 +31,6 @@ namespace Kracker.Base.Domain.Inventory
         private Dictionary<string, FileDescription> _fileDescriptions;
 
         public InventoryManager(
-            AppFolder appFolder,
             ILogger logger,
             IWorkedFoldersProvider workedFoldersProvider,
             IFileDescriptionBuilder descriptionBuilder,
