@@ -6,9 +6,12 @@ namespace Kracker.Base.Domain.Inventory
     public class FileDescription
     {
         public long Id { get; set; }
-        [JsonPropertyName("name")] public string Name { get; set; } = string.Empty;
+        
+        [JsonPropertyName("name")] 
+        public string Name { get; set; } = string.Empty;
 
-        [JsonPropertyName("size")] public long Size { get; set; }
+        [JsonPropertyName("size")] 
+        public long Size { get; set; }
 
         [JsonPropertyName("count")]
         public long LinesCount { get; set; }

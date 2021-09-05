@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography;
+using Murmur;
 
 namespace Kracker.Base.Domain.Inventory
 {
@@ -23,7 +23,7 @@ namespace Kracker.Base.Domain.Inventory
                 LastWriteTime = fileInfo.LastWriteTime
             };
 
-            using (var md5 = MD5.Create())
+            using (var md5 = MurmurHash.Create128())
             using (var reader = fileInfo.OpenRead())
             {
                 var hash = md5.ComputeHash(reader);
