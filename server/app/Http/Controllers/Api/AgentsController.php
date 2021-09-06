@@ -157,8 +157,35 @@ class AgentsController extends Controller
             {
                 if (isset($invEntry['name']) && isset($invEntry['size']) && isset($invEntry['count']) && isset($invEntry['checksum']) && isset($invEntry['type']))
                 {
-                    $inventory = Inventory::firstOrCreate(['name' => $invEntry['name'], 'size' => $invEntry['size'], 'count' => $invEntry['count'], 'type' => $invEntry['type'], 'checksum' => $invEntry['checksum']]);
-                    AgentInventory::firstOrCreate(['agent_id' => $agent->id, 'inventory_id' => $inventory->id]);
+					try { 
+						$inventory = Inventory::where('name', $invEntry['name'])->where('size' ,$invEntry['size'])->where('count',$invEntry['count'])->where('type',$invEntry['type'])->where('checksum',$invEntry['checksum'])->first();
+					if($inventory===null)
+					{
+						$inventory=new Inventory;
+						$inventory->name=$invEntry['name'];
+						$inventory->size=$invEntry['size'];
+						$inventory->count=$invEntry['count'];
+						$inventory->type=$invEntry['type'];
+						$inventory->checksum=$invEntry['checksum'];
+						$inventory->save();
+						
+					}
+					
+					
+					if (AgentInventory::where('agent_id', $agent->id)->where('inventory_id',$inventory->id)->first() === null) {
+					
+						
+							$agent_inv_entry = new AgentInventory;
+							$agent_inv_entry->agent_id = $agent->id;
+							$agent_inv_entry->inventory_id = $inventory->id;
+							$agent_inv_entry->save();
+					
+
+
+					}
+						} catch(\Illuminate\Database\QueryException $ex){ 
+						 
+						}
                 }
             }
 			
