@@ -40,9 +40,9 @@ class TaskDone extends Notification
      */
     public function toMessage($notifiable)
     {
-		$message='Task '.$notifiable->id.' done.'.PHP_EOL;
-		$message.='Template:'.$notifiable->task->template->name.PHP_EOL;
-		$message.='Hashlist:'.$notifiable->task->hashlist->name.PHP_EOL;
+		$message='Task '.$notifiable->task_chain->id.' done.'.PHP_EOL;
+		$message.='Template:'.$notifiable->task_chain->task->template->name.PHP_EOL;
+		$message.='Hashlist:'.$notifiable->task_chain->task->hashlist->name.PHP_EOL;
 		
 		return 	$message;
 

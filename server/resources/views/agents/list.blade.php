@@ -22,7 +22,7 @@
 	@else
 	<tr>
 	 @endif
-		<td><a href="/agents/{{$agent->id}}">{{$agent->id}}</td>
+		<td><a href="/agents/{{$agent->id}}">{{$agent->hostname}} ({{$agent->ip}})</td>
 		<td>{{$agent->ip}}</td>
 		<td> 
     @if ($agent->last_seen <60)

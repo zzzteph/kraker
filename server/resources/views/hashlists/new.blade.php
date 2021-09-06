@@ -1,6 +1,7 @@
 @include('include.header')
   <section class="section">
 	<div class="container">
+
 	@if($errors->any())
 	<div class="notification is-danger">
 		{{$errors->first()}}
@@ -21,15 +22,17 @@
       <div class="field">
         <label class="label">Hashtype</label>
         <div class="control">
-          <div class="select">
-            <select name="hashtype">
+
+            <select name="hashtype" class="selectpicker">
             
+			
+
             @foreach ($hashtypes as $hashtype)
              <option value="{{$hashtype->id}}">{{$hashtype->name}}</option>
           @endforeach
             
              </select>
-          </div>
+
         </div>
       </div>
       
@@ -74,6 +77,11 @@
 
   </section>
 <script>
+$(function() {
+  $('select').selectize();
+});
+
+
   const fileInput = document.querySelector('#file-js-example input[type=file]');
   fileInput.onchange = () => {
     if (fileInput.files.length > 0) {

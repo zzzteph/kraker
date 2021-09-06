@@ -49,7 +49,50 @@
 			@endif
 
 
+		@elseif ($template->type === 'chain')
+						<table class="table table is-fullwidth">
+						  <thead>
+							<tr>
+							  <th><abbr title="id">#</abbr></th>
+							  <th><abbr title="Name">Name</abbr></th>
+							  <th><abbr title="Type">Type</abbr></th>
+							  <th><abbr title="Status">Status</abbr></th>
+							  <th><abbr title="Keyspace">Keyspace</abbr></th>
+							</tr>
+						  </thead>
+						
+							<tbody>
+			@foreach ($template->content as $chain)
 
+						<tr>
+							<td><a href="/templates/{{$chain->template->id}}">{{$chain->template->id}}</td>
+							<td>{{$chain->template->name}}</td>
+
+							
+							<td>{{$chain->template->type}}</td>
+							
+									<td>
+							   @if ($chain->template->status === 'todo')
+					<span class="tag is-warning">{{$chain->template->status}}</span>
+						
+					   @elseif ($chain->template->status === 'valid')
+						<span class="tag is-success">{{$chain->template->status}}</span>
+					@else
+						<span class="tag is-danger">{{$chain->template->status}}</span>
+					@endif
+
+							</td>
+							
+							
+							
+						<td>{{$chain->template->keyspace}}</td>
+						 
+						</tr>
+			
+			@endforeach
+
+		</tbody>
+						</table>
 
 		@endif
 

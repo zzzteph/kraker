@@ -6,11 +6,23 @@
     <title>KRAKER</title>
     <link rel="stylesheet" href="{{ asset('css/bulma.min.css')}}">
 	<link href="{{ asset('fontawesome/css/all.css')}}" rel="stylesheet">
+	<link href="{{ asset('css/selectize.min.css')}}" rel="stylesheet">
 	<script src="{{ asset('fontawesome/js/all.js')}}"></script>
     <script src="{{ asset('js/jquery-3.5.1.js')}}"></script>
     <script src="{{ asset('js/vue.js')}}"></script>
 	<script src="{{ asset('js/axios.min.js')}}"></script>
-   
+    <script src="{{ asset('js/selectize.min.js')}}"></script>
+	    <style type="text/css" media="screen">
+      body {
+        display: flex;
+        min-height: 100vh;
+        flex-direction: column;
+      }
+
+      #wrapper {
+        flex: 1;
+      }
+    </style>
   </head>
   <body>
 
@@ -141,3 +153,4 @@
 </nav>
 </div>
 </section>
+<div id="wrapper">

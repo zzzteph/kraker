@@ -17,77 +17,88 @@ class Task extends Model
         return $this->belongsTo(Hashlist::class);
     }
 	
-		public function jobs()
+		public function task_chains()
     {
-        return $this->hasMany(Job::class);
+        return $this->hasMany(TaskChain::class);
+    }
+
+	
+	public function getCurrentChainAttribute()
+    {
+        return $this->hasMany(TaskChain::class)->where('status','todo')->first();
+		
     }
 	
-		public function getTimeLeftAttribute()
-	{
-		$done=0;
-		$done_jobs=0;
-		$avg_time=0;
-		$all=0;
-		foreach($this->jobs as $job)
-		{
-			$all++;
-			if($job->status=='done' || $job->status=='error') $done++;
-			if($job->status=='done')
-			{
-				$done_jobs++;
-				$avg_time+=$job->spend_time;
-			}
-		}
-		if($avg_time==0)return FALSE;
-		$avg_time=$avg_time/$done_jobs;
-		return round($avg_time*($all-$done));
-
+	public function getNextChainAttribute()
+    {
+      $count=$this->hasMany(TaskChain::class)->count();
+	  foreach($this->template->content as $chain)
+	  {
+		  if($count==0)return $chain->template;
+		  $count--;
+	  }
+		return FALSE;	  
     }
-	 
 	
 	
 	public function getProgressAttribute()
 	{
-		$done=0;
-		$all=0;
-		foreach($this->jobs as $job)
-		{
-			$all++;
-			if($job->status=='done' || $job->status=='error') $done++;
-		}
-		return round(($done/$all)*100);
+		return round(($this->hasMany(TaskChain::class)->where('status','done')->count()/$this->template->parts)*100);
     }
 	 
+	
+		public function getChainTotalAttribute()
+    {
+        return $this->template->parts;
+		
+    }
+	
+	public function getJobsAttribute()
+	{
+	//	if($this->template->type!=='chain')return $this->task_chains()->first()->jobs;
+	//	return $this->task_chains()->orderBy('id')->first()->jobs;
+		$jobs=collect();
+
+		foreach($this->task_chains as $chain)
+		{
+			
+			foreach($chain->jobs as $job)
+			{
+				$jobs->push($job);
+			}
+		}
+		return $jobs;
+	
+	
+	
+	
+    }
+	
+	
 	
 	public function getCrackedAttribute()
 	{
 		$count=0;
 
-		foreach($this->jobs as $job)
+		foreach($this->task_chains as $chain)
 		{
-			$count+=$job->cracked;
+			$count+=$chain->cracked;
 		}
 		return $count;
     }
+	
 	
 	public function getAgentsAttribute()
 	{
 		$agents=array();
 
-		foreach($this->jobs as $job)
+		foreach($this->task_chains as $chain)
 		{
-
-			if($job->status=='running')
-			{
-				if($job->agent_id!==null)
-					if(!in_array($job->agent_id,$agents))
-						array_push($agents,$job->agent_id);
-			}
+			if(!empty($chain->agents))
+			array_push($agents,$chain->agents);
 		}
 		return $agents;
     }
-	
-	
 	
 	
 }

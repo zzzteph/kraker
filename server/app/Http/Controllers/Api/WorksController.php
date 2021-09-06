@@ -11,11 +11,13 @@ use App\Models\Hashlist;
 use App\Models\Template;
 use App\Models\TemplateWordlist;
 use App\Models\TemplateMask;
+use App\Models\TemplateChain;
 use App\Models\AgentInventory;
 use App\Models\AgentStats;
 use App\Models\AgentLogs;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Task;
+use App\Models\TaskChain;
 use App\Models\Job;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
@@ -128,16 +130,18 @@ class WorksController extends Controller
          //filter by tasks agent can execute
          $validTasks=collect();
          foreach($tasks as $task)
-		     {
-              if($task->template->type=="mask")$validTasks->push($task);
+		 {
+			
+              if($task->current_chain->template->type=="mask")$validTasks->push($task);
 			       
-              if($task->template->type=="wordlist")
+              if($task->current_chain->template->type=="wordlist")
               {
-                    if($this->canAgentExecuteTemplateWordlist($agent->id,$task->template->content->inventory_id,$task->template->content->rule_id)==TRUE)
+                    if($this->canAgentExecuteTemplateWordlist($agent->id,$task->current_chain->template->content->inventory_id,$task->current_chain->template->content->rule_id)==TRUE)
                     {
                       $validTasks->push($task);
                     }
-              }                                 
+              }   
+
          }
           //get all priorities to pick right one
         $priority=0;
@@ -152,13 +156,14 @@ class WorksController extends Controller
             //we got right task
             if($priority<=0)
             {
-              $job=Job::where(['status'=>'todo','task_id'=>$task->id])->orderBy('id')->first();
+              $job=Job::where(['status'=>'todo','task_chain_id'=>$task->current_chain->id])->orderBy('id')->first();
               if($job===null)continue;
                $job->status="running";
                $job->agent_id=$agent->id;
+			  
                $job->save();
 			   $hashlist=Hashlist::where('id',$task->hashlist_id)->first();
-              if($task->template->type=="mask")
+              if($task->current_chain->template->type=="mask")
               {
 				  
 				  
@@ -169,16 +174,16 @@ class WorksController extends Controller
                  'job_id'=> $job->id,
 	             'skip'=> $job->skip,
                  'limit'=> $job->limit,
-                 'mask'=>$task->template->content->mask,
-                 'charset1'=>$task->template->content->charset1,
-                 'charset2'=>$task->template->content->charset2,
-                 'charset3'=>$task->template->content->charset3,
-                 'charset4'=>$task->template->content->charset4,
+                 'mask'=>$task->current_chain->template->content->mask,
+                 'charset1'=>$task->current_chain->template->content->charset1,
+                 'charset2'=>$task->current_chain->template->content->charset2,
+                 'charset3'=>$task->current_chain->template->content->charset3,
+                 'charset4'=>$task->current_chain->template->content->charset4,
 				 'content'=>base64_encode(Storage::get($hashlist->link)),
 				 'pot_content'=>base64_encode($hashlist->pot)
                  ]); 
               }
-              if($task->template->type=="wordlist")
+              if($task->current_chain->template->type=="wordlist")
               {
                  
 
@@ -188,8 +193,8 @@ class WorksController extends Controller
                      'job_id'=> $job->id,
 						'skip'=> $job->skip,
 					'limit'=> $job->limit,
-                     'wordlist_id'=>$task->template->content->wordlist_id,
-                     'rule_id'=>$task->template->content->rule_id,
+                     'wordlist_id'=>$task->current_chain->template->content->wordlist_id,
+                     'rule_id'=>$task->current_chain->template->content->rule_id,
 					 'content'=>base64_encode(Storage::get($hashlist->link)),
 					 'pot_content'=>base64_encode($hashlist->pot)
                    ]); 

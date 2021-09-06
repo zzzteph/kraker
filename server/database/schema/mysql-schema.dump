@@ -166,7 +166,6 @@ DROP TABLE IF EXISTS `jobs`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `jobs` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `task_id` bigint(20) unsigned NOT NULL,
   `agent_id` char(36) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `skip` bigint(20) unsigned NOT NULL DEFAULT 0,
   `limit` bigint(20) unsigned NOT NULL DEFAULT 0,
@@ -177,10 +176,11 @@ CREATE TABLE `jobs` (
   `errors` int(11) NOT NULL DEFAULT 0,
   `status` enum('todo','done','running','error') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'todo',
   `spend_time` int(11) NOT NULL DEFAULT 0,
+  `task_chain_id` bigint(20) unsigned NOT NULL,
   PRIMARY KEY (`id`),
   KEY `jobs_agent_id_foreign` (`agent_id`),
-  KEY `jobs_task_id_foreign` (`task_id`),
-  CONSTRAINT `jobs_task_id_foreign` FOREIGN KEY (`task_id`) REFERENCES `tasks` (`id`) ON DELETE CASCADE
+  KEY `jobs_task_chain_id_foreign` (`task_chain_id`),
+  CONSTRAINT `jobs_task_chain_id_foreign` FOREIGN KEY (`task_chain_id`) REFERENCES `task_chains` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `migrations`;
@@ -217,6 +217,23 @@ CREATE TABLE `pot` (
   CONSTRAINT `pot_hashlist_id_foreign` FOREIGN KEY (`hashlist_id`) REFERENCES `hashlists` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `task_chains`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `task_chains` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `template_id` bigint(20) unsigned NOT NULL,
+  `task_id` bigint(20) unsigned NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `status` enum('done','stopped','cancelled','todo','error') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'todo',
+  PRIMARY KEY (`id`),
+  KEY `task_chains_template_id_foreign` (`template_id`),
+  KEY `task_chains_task_id_foreign` (`task_id`),
+  CONSTRAINT `task_chains_task_id_foreign` FOREIGN KEY (`task_id`) REFERENCES `tasks` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `task_chains_template_id_foreign` FOREIGN KEY (`template_id`) REFERENCES `templates` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `tasks`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -245,6 +262,23 @@ CREATE TABLE `telegram` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `template_chains`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `template_chains` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `template_id` bigint(20) unsigned NOT NULL,
+  `chain_id` bigint(20) unsigned NOT NULL,
+  `order` int(11) NOT NULL DEFAULT 0,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `template_chains_template_id_foreign` (`template_id`),
+  KEY `template_chains_chain_id_foreign` (`chain_id`),
+  CONSTRAINT `template_chains_chain_id_foreign` FOREIGN KEY (`chain_id`) REFERENCES `templates` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `template_chains_template_id_foreign` FOREIGN KEY (`template_id`) REFERENCES `templates` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `template_mask`;
@@ -305,8 +339,8 @@ CREATE TABLE `templates` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `name` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `type` enum('mask','wordlist') COLLATE utf8mb4_unicode_ci NOT NULL,
   `status` enum('todo','error','valid') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'todo',
+  `type` enum('mask','wordlist','chain') COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -421,3 +455,10 @@ INSERT INTO `migrations` VALUES (91,'2021_03_07_152353_create_channels_table',73
 INSERT INTO `migrations` VALUES (92,'2021_03_07_200937_create_force_tasks_table',74);
 INSERT INTO `migrations` VALUES (93,'2021_03_09_215542_create_telegram_table',75);
 INSERT INTO `migrations` VALUES (94,'2021_03_13_143025_drop_channels_table',75);
+INSERT INTO `migrations` VALUES (97,'2021_08_24_195326_create_task_chains_table',76);
+INSERT INTO `migrations` VALUES (98,'2021_08_24_200254_update_jobs',77);
+INSERT INTO `migrations` VALUES (99,'2021_08_24_201045_update_jobs_add_key',78);
+INSERT INTO `migrations` VALUES (100,'2021_08_24_203551_update_templates',79);
+INSERT INTO `migrations` VALUES (101,'2021_08_24_204127_update_templates_2',80);
+INSERT INTO `migrations` VALUES (102,'2021_08_24_195126_create_template_chain_contents_table',81);
+INSERT INTO `migrations` VALUES (103,'2021_09_04_161034_update_task_chain',82);

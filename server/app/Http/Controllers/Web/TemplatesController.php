@@ -16,6 +16,7 @@ use App\Models\TemplateMask;
 use App\Models\AgentInventory;
 use App\Models\Task;
 use App\Models\Job;
+use App\Models\TemplateChain;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -26,14 +27,15 @@ class TemplatesController extends Controller
 
   public function new()
  {
-   return view('templates.new',['wordlists'=>Inventory::where('type', 'wordlist')->get(),'rules'=>Inventory::where('type', 'rule')->get()]);
+   return view('templates.new',['templates'=>Template::where('status', 'valid')->where('type','!=', 'chain')->get(),'wordlists'=>Inventory::where('type', 'wordlist')->get(),'rules'=>Inventory::where('type', 'rule')->get()]);
  }
  
  public function create(Request $request)
  {
+
     if (!$request->filled('name')) {
      
-                return redirect('/templates/new')->withErrors(['message' => 'You forget to set name']);
+        return redirect('/templates/new')->withErrors(['message' => 'You forget to set name']);
     }
     
         if (!$request->filled('TemplateType')) {
@@ -41,7 +43,7 @@ class TemplatesController extends Controller
                 return redirect('/templates/new')->withErrors(['message' => 'Template is not set']);
     }
     
-    if($request->input('TemplateType')!=='wordlist' && $request->input('TemplateType')!=='mask')
+    if($request->input('TemplateType')!=='wordlist' && $request->input('TemplateType')!=='mask' && $request->input('TemplateType')!=='chain')
     {
       return redirect('/templates/new')->withErrors(['message' => 'Unknown template type']);
     } 
@@ -55,6 +57,20 @@ class TemplatesController extends Controller
     {
       return redirect('/templates/new')->withErrors(['message' => 'Wordlist cant be null']);
     } 
+	
+	if($request->input('TemplateType')=='chain')
+    {
+		foreach($request->input('template') as $template)
+		{
+			$tmp=Template::where('id',$template)->firstOrFail();
+			if($tmp->type=="chain")
+				  return redirect('/templates/new')->withErrors(['message' => 'Loop chain detected']);
+			  if($tmp->status!="valid")
+				   return redirect('/templates/new')->withErrors(['message' => 'All templates must have valid status']);
+		}
+    } 
+	
+	
      if($request->input('TemplateType')=='wordlist')
      {
 
@@ -93,7 +109,36 @@ class TemplatesController extends Controller
 
      }
     
-    
+         if($request->input('TemplateType')=='chain')
+     {
+         $template=new Template();
+         $template->type='chain';
+         $template->name=$request->input('name');
+         $template->status='valid';
+         $template->save();
+		 
+		 
+		foreach($request->input('template') as $chain)
+		{
+			$tmp=Template::where('id',$chain)->firstOrFail();
+			$content=new TemplateChain();
+			$content->template_id= $template->id;
+			$content->chain_id=$tmp->id;
+			$template->keyspace+=$tmp->keyspace;
+            $content->save();   
+			  if($tmp->status!="valid")
+			  {
+				    $template->status='error';
+					 $template->save();
+					  return redirect('/templates/new')->withErrors(['message' => 'During creation, all templates must have valid status!!']);
+					
+			  }
+		}
+		  $template->save();
+     }
+	 
+	 
+	 
     return redirect('/templates/');
  }
  

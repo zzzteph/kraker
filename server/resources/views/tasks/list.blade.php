@@ -56,7 +56,7 @@
 			@endif		
 			
 			
-						 @if ($task->status === 'todo')
+			 @if ($task->status === 'todo')
 			  <form method="POST"  enctype="multipart/form-data" action="/tasks/{{$task->id}}/stop">
 				@csrf
 				@method('PUT')

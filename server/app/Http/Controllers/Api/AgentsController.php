@@ -14,7 +14,6 @@ use App\Models\ForceTask;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-
 use App\Notifications\NewAgent;
 use App\Notifications\AgentOnline;
 

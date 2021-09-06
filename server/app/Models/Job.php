@@ -9,9 +9,9 @@ class Job extends Model
 {
     use HasFactory;
 	use Notifiable;
-	    public function task()
+	    public function task_chain()
     {
-        return $this->belongsTo(Task::class,'task_id','id');
+        return $this->belongsTo(TaskChain::class,'task_chain_id','id');
     }
 	
 	

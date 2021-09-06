@@ -42,7 +42,7 @@ class PasswordsCracked extends Notification
     {
 		
 
-		return 	'New '.$notifiable->cracked.' passwords was cracked for '.$notifiable->task->hashlist->name;
+		return 	'New '.$notifiable->cracked.' passwords was cracked for '.$notifiable->task_chain->task->hashlist->name;
 
     }
 

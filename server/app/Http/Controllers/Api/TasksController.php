@@ -9,6 +9,7 @@ use App\Models\Hashtype;
 use App\Models\Hashlist;
 use App\Models\Template;
 use App\Models\Task;
+use App\Models\TaskChain;
 use App\Models\Job;
 use App\Models\AgentInventory;
 use App\Models\AgentStats;
@@ -87,8 +88,7 @@ class TasksController extends Controller
 			'hashtype_id'=>$task->hashlist->hashtype_id,
 			'progress'=>$task->progress,
 			'cracked'=>$task->cracked,
-			'agents'=>$task->agents,
-			'time_left'=>$task->time_left
+			'agents'=>$task->agents
 			)
 			);
 		}
@@ -360,58 +360,78 @@ class TasksController extends Controller
 		return response()->json(round($totalKeyspace/$avgSpeed));
 	}
 	
-	
-	
-	public function create(Request $req)
+	public function parts_calculation($template_id,$hashlist_id)
 	{
-		if (!$req->filled(['hashlist_id','template_id']))  return response()->json(0);
-			$hashlist=Hashlist::where('id',$req->input('hashlist_id'))->firstOrFail();
-			$template=Template::where('id',$req->input('template_id'))->firstOrFail();
 		
-	
-		$totalKeyspace=$this->calculate_real_keyspace($req->input('template_id'),$req->input('hashlist_id'));
-		$avgSpeed=$this->calculate_avg_agents_speed($req->input('template_id'),$req->input('hashlist_id'));
+		$hashlist=Hashlist::where('id',$hashlist_id)->firstOrFail();
+		$template=Template::where('id',$template_id)->firstOrFail();
 		
+		$totalKeyspace=$this->calculate_real_keyspace($template_id,$hashlist_id);
+		$avgSpeed=$this->calculate_avg_agents_speed($template_id,$hashlist_id);
 		if($avgSpeed==FALSE || $avgSpeed==0)
-			return response()->json(FALSE);
+			return FALSE;
 		
-		
-		
-		//how many actions will be in hashcat keyspace
 		$diffKeyspace=round($totalKeyspace/$template->keyspace);
 		if($diffKeyspace<=1)$diffKeyspace=1;
-		
+
 		//how many parts can be done in 10 minutes (600 secs)
 		
 		$parts=round((300*$avgSpeed)/$diffKeyspace);
 		
 		$parts=min($parts,$template->keyspace);
+		return $parts;
+	}
+	
+	
+	
+	
+	public function create(Request $req)
+	{
 		
-		
-		//for($parts=0;$parts<$template->keyspace;$parts++)
-		//{
-		//	if(round($parts*$diffKeyspace/$avgSpeed)>=300)break;
-		//}
-		//now we know how many parts can be done by avg speed
-		
+			if (!$req->filled(['hashlist_id','template_id']))  return response()->json(0);
+
+	
+		$hashlist=Hashlist::where('id',$req->input('hashlist_id'))->firstOrFail();
+		$template=Template::where('id',$req->input('template_id'))->firstOrFail();
+		$parts=$this->parts_calculation($req->input('template_id'),$req->input('hashlist_id'));
+		if($parts===FALSE)
+			return response()->json(FALSE);
 		$task=new Task;
 		$task->hashlist_id=$hashlist->id;
 		$task->template_id=$template->id;
 		$task->save();
+		
+		$taskChain=new TaskChain;
+		$taskChain->task_id=$task->id;
+		if($template->type!=='chain')
+		{
+			$taskChain->template_id=$task->template_id;
+			$taskChain->save();
+		}
+		else
+		{	//chain have little different logic
+			$chain=$template->content()->first();
+			$taskChain->template_id=$chain->chain_id;
+			$taskChain->save();
+			//calculate parts for chain
+			$template=Template::where('id',$chain->chain_id)->firstOrFail();
+			$parts=$this->parts_calculation($template->id,$hashlist->id);
+		}
+		
 		$insertJob=array();
 		for($i=0;$i<=$template->keyspace;$i+=$parts)
 		{
 			if($i>=$template->keyspace)break;
-			array_push($insertJob,array('task_id'=>$task->id,'skip'=>$i,'limit'=>$parts));
-
+			array_push($insertJob,array('task_chain_id'=>$taskChain->id,'skip'=>$i,'limit'=>$parts));
 		}			
 		Job::insert($insertJob);
-
-		
-		
-		
-
 		return response()->json($task->id);
+	
+		
+		
+		
+
+		
 	}
 	
 	

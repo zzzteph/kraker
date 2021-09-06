@@ -22,8 +22,7 @@ class Inventory extends Model
 			$templates=TemplateWordlist::where('wordlist_id',$inventory->id)->orWhere('rule_id',$inventory->id)->get();
 			foreach($templates as $template)
 			{
-				Template::where('id',$template->template_id)->delete();
-				
+				Template::where('id',$template->template_id)->delete();	
 			}
 			AgentInventory::where('inventory_id',$inventory->id)->delete();
 

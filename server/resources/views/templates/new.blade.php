@@ -26,6 +26,7 @@
         <option disabled selected value> -- select an option -- </option>
           <option value="wordlist">Wordlist (+rules)</option>
           <option value="mask">Mask</option>
+		  <option value="chain">Chain</option>
         </select>
       </div>
     </div>
@@ -135,6 +136,49 @@
   
   </template>
 
+
+  <template v-if="template === 'chain'">
+@csrf
+
+
+
+  <div class="field has-addons" v-for="(input, index) in templates" :key="`templates-${index}`">
+    <div class="control">
+      <div class="select">
+        <select name="template[]"  v-model="input.template_id">
+        <option disabled selected value> -- select an option -- </option>
+            @foreach ($templates as $template)
+                <option value="{{$template->id}}">{{$template->name}}</option>
+            @endforeach
+        </select>
+      </div>
+    </div>
+	<div class="control">
+  <a class="button is-danger" @click="removeField(index)">Remove</a>
+</div>
+
+  
+
+
+</div>
+<div class="field">
+  <div class="control">
+      <a class="button is-success" @click="addField()">Add</a>
+	    </div>
+</div>
+	  
+	  
+<div class="field">
+  <div class="control">
+    <button class="button is-link">Submit</button>
+  </div>
+</div>
+
+  </template>
+
+
+
+
 </form>
 </div>
 </section>
@@ -143,12 +187,22 @@
 var app = new Vue({
   el: '#app',
   data: {
-    template:""
+    template:"",
+	templates: [{ template_id: "" }],
   },
   methods: {
     onChange(event) {
             this.template=event.target.value;
-        }
+        },
+	addField() {
+      this.templates.push({ template_id: 0 });
+	  console.log(this.templates);
+    },
+    removeField(index) {
+		
+       this.templates.splice(index, 1);
+   
+   }
     }
   
   
