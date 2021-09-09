@@ -32,7 +32,7 @@ namespace Kracker.Base.Domain.Jobs
             _hashCatTask = Task.FromResult(ExecutionResult.FromError(0,"There isn't a task"));
         }
 
-        public void Execute()
+        public virtual void Execute()
         {
             _hashCatTask = _executor.Execute();
         }

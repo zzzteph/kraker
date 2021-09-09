@@ -31,6 +31,11 @@ namespace Kracker.Base.Domain.Jobs
             _tempFileManager.WriteBase64Content(_paths.PotFile, string.Empty);
         }
 
+        public override void Execute()
+        {
+            _hashCatTask = _executor.Execute(true);
+        }
+
         public override async Task Finish()
         {
             var executionResult = _hashCatTask.Result;
