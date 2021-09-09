@@ -43,9 +43,9 @@
 
 
 		@elseif ($template->type === 'wordlist')
-			<div class="block"> <strong>Wordlist:</strong> <a href="/inventory/{{$template->content->wordlist->id}}">{{$template->content->wordlist->name}}</a></div>
+			<div class="block"> <strong>Wordlist:</strong> <a href="/inventory/">{{$template->content->wordlist->name}}</a></div>
 			@if ($template->content->rule !== null)
-				<div class="block"> <strong>Rule:</strong> <a href="/inventory/{{$template->content->rule->id}}">{{$template->content->rule->name}}</a></div>
+				<div class="block"> <strong>Rule:</strong> <a href="/inventory/">{{$template->content->rule->name}}</a></div>
 			@endif
 
 

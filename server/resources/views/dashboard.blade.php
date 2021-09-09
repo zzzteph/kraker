@@ -15,6 +15,7 @@
 				<th>Hashlist</th>
 				<th><abbr title="Cracked passwords count">Cracked</abbr></th>
 				<th>Progress</th>
+				<th><abbr title="Estimated timeout for current task part">ETA</abbr></th>
 				<th>Priority</th>
 				<th></th>
 			</thead>
@@ -29,6 +30,14 @@
 					<progress class="progress is-danger" v-if="task.progress<25" v-bind:value="task.progress" max="100"></progress>
 					<progress class="progress is-warning" v-else-if="task.progress>=25 && task.progress<50" v-bind:value="task.progress" max="100"></progress>
 					<progress class="progress is-success" v-else v-bind:value="task.progress" max="100"></progress>
+				</td>
+								<td>
+				<span v-if="task.eta!=false">@{{task.eta}} <i class="fas fa-hourglass-start"></i></span>
+				<span v-if="task.eta==false"><i class="fas fa-question-circle"></i></span>
+
+
+
+
 				</td>
 				<td>
 				

@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>KRAKER</title>
+	 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="{{ asset('css/bulma.min.css')}}">
 	<link href="{{ asset('fontawesome/css/all.css')}}" rel="stylesheet">
 	<link href="{{ asset('css/selectize.min.css')}}" rel="stylesheet">

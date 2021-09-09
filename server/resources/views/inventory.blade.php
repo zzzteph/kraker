@@ -26,7 +26,7 @@
 		<td> 
 			@foreach ($entry->agents as $agent)
 			
-			<a href="/agents/{{$agent->agent_id}}">{{$agent->agent_id}}</a></br>
+			<a href="/agents/{{$agent->agent_id}}">{{$agent->agent->hostname}} ({{$agent->agent->ip}})</a></br>
 			
 			@endforeach
 		</td>
