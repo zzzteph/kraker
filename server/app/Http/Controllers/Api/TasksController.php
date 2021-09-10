@@ -88,7 +88,8 @@ class TasksController extends Controller
 			'hashtype_id'=>$task->hashlist->hashtype_id,
 			'progress'=>$task->progress,
 			'cracked'=>$task->cracked,
-			'agents'=>$task->agents
+			'agents'=>$task->agents,
+			'eta'=>$task->eta
 			)
 			);
 		}

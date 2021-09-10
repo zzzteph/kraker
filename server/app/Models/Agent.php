@@ -60,6 +60,12 @@ class Agent extends Model
 	}
 	  
      
+	 	public function job()
+    {
+        return $this->hasMany(Job::class);
+    }
+	
+	 
 	public function info()
     {
         return $this->hasMany(AgentInfo::class);

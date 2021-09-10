@@ -41,6 +41,19 @@ class Task extends Model
     }
 	
 	
+		public function getEtaAttribute()
+	{
+		$eta=0;
+
+		foreach($this->task_chains as $chain)
+		{
+			$eta+=$chain->time_left;
+		}
+		if($eta==0)return FALSE;
+		return $eta;
+    }
+	
+	
 	public function getProgressAttribute()
 	{
 		return round(($this->hasMany(TaskChain::class)->where('status','done')->count()/$this->template->parts)*100);
@@ -67,6 +80,7 @@ class Task extends Model
 				$jobs->push($job);
 			}
 		}
+		$jobs->flatten();
 		return $jobs;
 	
 	

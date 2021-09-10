@@ -14,5 +14,8 @@ class Job extends Model
         return $this->belongsTo(TaskChain::class,'task_chain_id','id');
     }
 	
-	
+		public function agent()
+    {
+        return $this->belongsTo(Agent::class);
+    }
 }

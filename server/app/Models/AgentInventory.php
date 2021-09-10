@@ -13,7 +13,10 @@ class AgentInventory extends Model
     use HasFactory;
 
 	
-
+	public function agent()
+    {
+        return $this->belongsTo(Agent::class);
+    }
 	
 	
 }

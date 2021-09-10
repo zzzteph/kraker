@@ -62,26 +62,7 @@ class WorksController extends Controller
             return response()->json('access denied', 403);
         }
 		
-        //Speed Task - task for recalculating speeds each 6 hours
-        $enabledHashtypes = Hashtype::where('enabled', 1)->get();
-        foreach( $enabledHashtypes as $enabledHashtype)
-        {
-            $speedStats=AgentStats::where(['agent_id'=>$agent->id,'hashtype_id'=>$enabledHashtype->id])->first();
-            //new speed stat or very old, 6 hours, need recalc
-            if( $speedStats===null)
-            {
-                 return response()->json(['type'=>'speedstat','hashtype_id'=> $enabledHashtype->id]);
-            }
-			$speedStats=AgentStats::where(['agent_id'=>$agent->id,'hashtype_id'=>$enabledHashtype->id])->where('updated_at', '<', Carbon::now()->subHours(12)->toDateTimeString())->first();
-			if( $speedStats!==null)
-            {
-                 return response()->json(['type'=>'speedstat','hashtype_id'=> $enabledHashtype->id]);
-            }
-			
-			
 
-        }
-         
         //Hashlist task- If we add new hashlist, need its hashes count
         $hashlist=Hashlist::where('status','todo')->first();
         
@@ -131,6 +112,19 @@ class WorksController extends Controller
          $validTasks=collect();
          foreach($tasks as $task)
 		 {
+			
+			//check that agent can execute template and has speed stats for that		
+			$speedStats=AgentStats::where(['agent_id'=>$agent->id,'hashtype_id'=>$task->hashlist->hashtype_id])->first();
+            //Ok, we can execute this template, lets do something else
+            if( $speedStats===null)
+            {
+                continue;
+            }
+			   //Ok, we can execute something else if speed=0
+			 if($speedStats->speed==0)
+			 {
+				 continue;
+			 }
 			
               if($task->current_chain->template->type=="mask")$validTasks->push($task);
 			       
@@ -211,6 +205,26 @@ class WorksController extends Controller
             }
         
         }
+		
+		
+		        //Speed Task - task for recalculating speeds each 6 hours
+        $enabledHashtypes = Hashtype::where('enabled', 1)->get();
+        foreach( $enabledHashtypes as $enabledHashtype)
+        {
+            $speedStats=AgentStats::where(['agent_id'=>$agent->id,'hashtype_id'=>$enabledHashtype->id])->first();
+            //new speed stat or very old, 6 hours, need recalc
+            if( $speedStats===null)
+            {
+                 return response()->json(['type'=>'speedstat','hashtype_id'=> $enabledHashtype->id]);
+            }
+			$speedStats=AgentStats::where(['agent_id'=>$agent->id,'hashtype_id'=>$enabledHashtype->id])->where('updated_at', '<', Carbon::now()->subHours(12)->toDateTimeString())->first();
+			if( $speedStats!==null)
+            {
+                 return response()->json(['type'=>'speedstat','hashtype_id'=> $enabledHashtype->id]);
+            }
+        }
+         
+		
         
         	  $log=new AgentLogs;
 			  $log->agent_id=$agent->id;
