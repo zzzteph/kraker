@@ -342,6 +342,44 @@ class TasksController extends Controller
 			
 	}
 	
+	function pretty_time($secs)
+	{
+		$mins =  $secs/60;
+		$hrs  = $mins/60;
+		$days = $hrs/24;
+		$months = $days/30.5;
+		$years = $days/365;
+
+		if ( $years> 1 )
+		{
+			return ("~ ".round($years,1)." years");
+
+		}
+		if ( $months> 1 )
+		{
+			return ("~ ".round($months,1)." months");
+
+		}
+		if ( $days> 1 )
+		{
+			return ("~ ".round($days,1)." days");
+
+		}
+		if ( $hrs> 1 )
+		{
+			return ("~ ".round($hrs,1)." hours");
+
+		}
+		if ( $mins> 1 )
+		{
+			return ("~ ".round($mins,1)." minutes");
+
+		}
+			return ("~ ".round($secs,1)." seconds");
+	}
+ 
+ 
+ 
 	public function calculate(Request $req)
 	{
 		if (!$req->filled(['hashlist_id','template_id']))  return response()->json(0);
@@ -358,7 +396,7 @@ class TasksController extends Controller
 		
 		
 
-		return response()->json(round($totalKeyspace/$avgSpeed));
+		return response()->json($this->pretty_time($totalKeyspace/$avgSpeed));
 	}
 	
 	public function parts_calculation($template_id,$hashlist_id)
